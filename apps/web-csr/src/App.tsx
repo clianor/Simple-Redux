@@ -1,58 +1,38 @@
 import { useSelector, useDispatch } from "simple-redux";
 import { RootState } from "./store";
+import { decrement, increment } from "./store/counter";
 
-interface Props {
-  item: keyof RootState;
-}
-
-function DecrementButton({ item }: Props) {
+function DecrementButton() {
   const dispatch = useDispatch();
-  return (
-    <button
-      onClick={() => {
-        dispatch(item, (state: RootState) => state[item] - 1);
-      }}
-    >
-      -
-    </button>
-  );
+  return <button onClick={() => dispatch(decrement())}>-</button>;
 }
 
-function IncrementButton({ item }: Props) {
+function IncrementButton() {
   const dispatch = useDispatch();
-  return (
-    <button
-      onClick={() => {
-        dispatch(item, (state: RootState) => state[item] + 1);
-      }}
-    >
-      +
-    </button>
-  );
+  return <button onClick={() => dispatch(increment())}>+</button>;
 }
 
-function DisplayValue({ item }: Props) {
-  const value = useSelector((state: RootState) => state[item]);
-  return (
-    <span>
-      {item}: {value}
-    </span>
-  );
+function DisplayValue() {
+  const value = useSelector((state: RootState) => state.counter);
+  return <span>counter: {value}</span>;
 }
 
 function App() {
   return (
-    <div>
-      <div>
-        <DecrementButton item="value1" />
-        <DisplayValue item="value1" />
-        <IncrementButton item="value1" />
-      </div>
-      <div>
-        <DecrementButton item="value2" />
-        <DisplayValue item="value2" />
-        <IncrementButton item="value2" />
-      </div>
+    <div
+      style={{
+        position: "absolute",
+        left: "50%",
+        top: "50%",
+        transform: "translate(-50%, -50%)",
+        display: "grid",
+        gridTemplateColumns: "1fr 1fr 1fr",
+        gap: "1rem",
+      }}
+    >
+      <DecrementButton />
+      <DisplayValue />
+      <IncrementButton />
     </div>
   );
 }

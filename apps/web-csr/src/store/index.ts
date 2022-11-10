@@ -1,8 +1,10 @@
 import { createStore } from "simple-redux";
+import { counterReducer } from "./counter";
 
 const store = createStore({
-  value1: 0,
-  value2: 10,
+  reducer: {
+    counter: counterReducer,
+  },
 });
 
 export type RootState = ReturnType<typeof store.getState>;

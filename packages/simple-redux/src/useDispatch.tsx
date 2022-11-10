@@ -9,15 +9,12 @@ export function useDispatch() {
   const { store } = context;
 
   const dispatch = useCallback(
-    <Key extends string, Payload extends unknown>(
-      key: Key,
-      payload: Payload
-    ) => {
-      const state = store.getState() as any;
-      store.setState({
-        ...state,
-        [key]: typeof payload === "function" ? payload(state) : payload,
-      });
+    ({ type, payload }) => {
+      const state = store.getState();
+      const [key, callback] = store.getReducerMap()[type];
+      const currentState = state[key];
+      const newState = callback(currentState, payload);
+      store.setState({ ...state, [key]: newState });
     },
     [store]
   );

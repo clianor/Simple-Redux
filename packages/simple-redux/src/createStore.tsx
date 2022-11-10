@@ -1,11 +1,57 @@
-export function createStore<State>(initState: State) {
-  let currentState = initState;
+export interface StoreOptions {
+  reducer: {
+    [key: string]: ReducerWithInitialState<any>;
+  };
+}
+
+export interface Action<Payload = undefined> {
+  type: string;
+  payload: Payload;
+}
+export type Reducer<State = any> = (
+  state: State | undefined,
+  action: Action<any>
+) => State;
+
+export type ReducerWithInitialState<State = any> = (() => {
+  [key: string]: Reducer;
+}) & {
+  getInitialState: () => State;
+};
+
+export function createStore(initState: StoreOptions) {
+  let currentState = Object.entries(initState.reducer).reduce(
+    (acc, [key, reducer]) => {
+      return {
+        ...acc,
+        [key]: reducer.getInitialState(),
+      };
+    },
+    {} as any
+  );
+
+  const reducerMap = Object.entries(initState.reducer).reduce(
+    (acc, [key, reducer]) => {
+      return {
+        ...acc,
+        ...Object.entries(reducer()).reduce((acc, [action, callback]) => {
+          acc[action] = [key, callback];
+          return acc;
+        }, {} as any),
+      };
+    },
+    {}
+  );
+
   const listeners = new Set<any>();
   return {
-    getState(): State {
+    getReducerMap(): any {
+      return reducerMap;
+    },
+    getState(): any {
       return currentState;
     },
-    setState(newState: State): void {
+    setState(newState: any): void {
       currentState = newState;
       listeners.forEach((listener) => listener(currentState));
     },
