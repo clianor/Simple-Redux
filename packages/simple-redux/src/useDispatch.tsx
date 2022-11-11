@@ -11,10 +11,10 @@ export function useDispatch() {
   const dispatch = useCallback(
     ({ type, payload }) => {
       const state = store.getState();
-      const [key, callback] = store.getReducerMap()[type];
-      const currentState = state[key];
+      const [stateKey, callback] = store.getReducerMap()[type];
+      const currentState = state[stateKey];
       const newState = callback(currentState, payload);
-      store.setState({ ...state, [key]: newState });
+      store.setState({ ...state, [stateKey]: newState });
     },
     [store]
   );

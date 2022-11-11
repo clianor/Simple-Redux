@@ -19,8 +19,8 @@ export type ReducerWithInitialState<State = any> = (() => {
   getInitialState: () => State;
 };
 
-export function createStore(initState: StoreOptions) {
-  let currentState = Object.entries(initState.reducer).reduce(
+export function createStore(options: StoreOptions) {
+  let currentState = Object.entries(options.reducer).reduce(
     (acc, [key, reducer]) => {
       return {
         ...acc,
@@ -30,7 +30,7 @@ export function createStore(initState: StoreOptions) {
     {} as any
   );
 
-  const reducerMap = Object.entries(initState.reducer).reduce(
+  const reducerMap = Object.entries(options.reducer).reduce(
     (acc, [key, reducer]) => {
       return {
         ...acc,
